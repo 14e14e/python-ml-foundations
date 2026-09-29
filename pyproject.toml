@@ -1,0 +1,23 @@
+[project]
+name = "python-ml-foundations"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "14e14e", email = "kekener3352@outlook.jp" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+python-ml-foundations = "python_ml_foundations:main"
+
+[build-system]
+requires = ["uv_build>=0.12.20,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.9",
+]
