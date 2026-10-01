@@ -19,6 +19,14 @@ uv run dataset-inspector ./sample_data
 uv run dataset-inspector ./sample_data --json
 ```
 
+### 詳細ログの表示
+
+処理の詳細や実行時間を確認する場合は、`--verbose`を指定します。
+
+```bash
+uv run dataset-inspector ./sample_data --verbose
+```
+
 ### テスト
 
 ```bash
