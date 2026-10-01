@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from python_ml_foundations.dataset_inspector.errors import DatasetInspectionError
@@ -9,11 +10,23 @@ from python_ml_foundations.dataset_inspector.scanner import (
     scan_files,
 )
 
+logger = logging.getLogger(__name__)
+
 
 def inspect_dataset(directory: Path) -> DatasetSummary:
     """指定されたディレクトリを調査し、データセットの概要情報を返します。"""
+    logger.debug(
+        "データセットの調査を開始します: %s",
+        directory,
+    )
+
     try:
         files = scan_files(directory)
+
+        logger.debug(
+            "%d件のファイルを検出しました。",
+            len(files),
+        )
 
         return DatasetSummary(
             total_files=len(files),
