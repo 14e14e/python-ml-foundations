@@ -1,9 +1,17 @@
+from collections.abc import Iterator
 from pathlib import Path
 
 
+def iter_files(directory: Path) -> Iterator[Path]:
+    """指定されたディレクトリ内のファイルを再帰的に走査し、1件ずつ返します。"""
+    for path in directory.rglob("*"):
+        if path.is_file():
+            yield path
+
+
 def scan_files(directory: Path) -> list[Path]:
-    """指定されたディレクトリ内のすべてのファイルを再帰的に取得します。"""
-    return [path for path in directory.rglob("*") if path.is_file()]
+    """指定されたディレクトリ内のすべてのファイルを走査し、リストとして返します。"""
+    return list(iter_files(directory))
 
 
 def get_extension_counts(files: list[Path]) -> dict[str, int]:

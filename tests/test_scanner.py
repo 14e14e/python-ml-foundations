@@ -4,6 +4,7 @@ from python_ml_foundations.dataset_inspector.scanner import (
     find_largest_file,
     get_extension_counts,
     get_total_size,
+    iter_files,
     scan_files,
 )
 
@@ -58,3 +59,23 @@ def test_find_largest_file(tmp_path: Path) -> None:
 
 def test_find_largest_file_when_empty() -> None:
     assert find_largest_file([]) is None
+
+
+def test_iter_files(tmp_path: Path) -> None:
+    """ファイルがGeneratorから1件ずつ取得できることを確認します。"""
+    (tmp_path / "a.txt").write_text(
+        "A",
+        encoding="utf-8",
+    )
+    (tmp_path / "b.txt").write_text(
+        "B",
+        encoding="utf-8",
+    )
+
+    file_iterator = iter_files(tmp_path)
+
+    files = list(file_iterator)
+
+    assert len(files) == 2
+    assert tmp_path / "a.txt" in files
+    assert tmp_path / "b.txt" in files
