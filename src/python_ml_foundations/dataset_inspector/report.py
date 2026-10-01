@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from python_ml_foundations.dataset_inspector.models import DatasetSummary
@@ -50,3 +51,12 @@ def format_report(
     )
 
     return "\n".join(lines)
+
+
+def format_json_report(summary: DatasetSummary) -> str:
+    """データセットの調査結果をJSON形式の文字列へ変換します。"""
+    return json.dumps(
+        summary.to_dict(),
+        ensure_ascii=False,
+        indent=2,
+    )

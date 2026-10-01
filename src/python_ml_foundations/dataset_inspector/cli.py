@@ -2,7 +2,10 @@ import argparse
 from pathlib import Path
 
 from python_ml_foundations.dataset_inspector.inspector import inspect_dataset
-from python_ml_foundations.dataset_inspector.report import format_report
+from python_ml_foundations.dataset_inspector.report import (
+    format_json_report,
+    format_report,
+)
 
 
 def validate_directory(value: str) -> Path:
@@ -33,6 +36,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="調査対象となるディレクトリを指定します。",
     )
 
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="調査結果をJSON形式で表示します。",
+    )
+
     return parser
 
 
@@ -42,9 +51,13 @@ def main() -> None:
     args = parser.parse_args()
 
     summary = inspect_dataset(args.directory)
-    report = format_report(
-        summary,
-        args.directory,
-    )
+
+    if args.json:
+        report = format_json_report(summary)
+    else:
+        report = format_report(
+            summary,
+            args.directory,
+        )
 
     print(report)
