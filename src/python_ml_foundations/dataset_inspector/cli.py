@@ -1,8 +1,12 @@
 import argparse
+import logging
 from pathlib import Path
 
 from python_ml_foundations.dataset_inspector.errors import DatasetInspectionError
 from python_ml_foundations.dataset_inspector.inspector import inspect_dataset
+from python_ml_foundations.dataset_inspector.logging_utils import (
+    configure_logging,
+)
 from python_ml_foundations.dataset_inspector.report import (
     format_json_report,
     format_report,
@@ -11,6 +15,9 @@ from python_ml_foundations.dataset_inspector.settings import (
     AppConfig,
     OutputFormat,
 )
+from python_ml_foundations.dataset_inspector.timing import measure_time
+
+logger = logging.getLogger(__name__)
 
 
 def validate_directory(value: str) -> Path:
@@ -72,17 +79,28 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
+    config = build_config(args)
+
+    configure_logging(config.verbose)
+
+    logger.debug(
+        "アプリケーションを開始します。対象: %s",
+        config.directory,
+    )
+
     try:
-        summary = inspect_dataset(args.directory)
+        with measure_time("データセット調査"):
+            summary = inspect_dataset(config.directory)
+
     except DatasetInspectionError as error:
         parser.error(str(error))
 
-    if args.json:
+    if config.output_format == OutputFormat.JSON:
         report = format_json_report(summary)
     else:
         report = format_report(
             summary,
-            args.directory,
+            config.directory,
         )
 
     print(report)
