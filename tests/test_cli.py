@@ -3,7 +3,12 @@ from pathlib import Path
 
 import pytest
 
-from python_ml_foundations.dataset_inspector.cli import validate_directory
+from python_ml_foundations.dataset_inspector.cli import (
+    build_config,
+    build_parser,
+    validate_directory,
+)
+from python_ml_foundations.dataset_inspector.settings import OutputFormat
 
 
 def test_validate_directory(tmp_path: Path) -> None:
@@ -35,3 +40,38 @@ def test_validate_directory_when_file(
 
     with pytest.raises(argparse.ArgumentTypeError):
         validate_directory(str(file_path))
+
+
+def test_build_config_text(tmp_path: Path) -> None:
+    """通常実行時にTEXT形式の設定が作成されることを確認します。"""
+    parser = build_parser()
+
+    args = parser.parse_args(
+        [
+            str(tmp_path),
+        ]
+    )
+
+    config = build_config(args)
+
+    assert config.directory == tmp_path
+    assert config.output_format == OutputFormat.TEXT
+    assert config.verbose is False
+
+
+def test_build_config_json(tmp_path: Path) -> None:
+    """--json指定時にJSON形式の設定が作成されることを確認します。"""
+    parser = build_parser()
+
+    args = parser.parse_args(
+        [
+            str(tmp_path),
+            "--json",
+            "--verbose",
+        ]
+    )
+
+    config = build_config(args)
+
+    assert config.output_format == OutputFormat.JSON
+    assert config.verbose is True

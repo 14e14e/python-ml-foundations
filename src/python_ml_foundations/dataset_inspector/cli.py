@@ -7,6 +7,10 @@ from python_ml_foundations.dataset_inspector.report import (
     format_json_report,
     format_report,
 )
+from python_ml_foundations.dataset_inspector.settings import (
+    AppConfig,
+    OutputFormat,
+)
 
 
 def validate_directory(value: str) -> Path:
@@ -43,7 +47,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="調査結果をJSON形式で表示します。",
     )
 
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="詳細な実行ログを表示します。",
+    )
+
     return parser
+
+
+def build_config(args: argparse.Namespace) -> AppConfig:
+    """コマンドライン引数からアプリケーション設定を作成します。"""
+    output_format = OutputFormat.JSON if args.json else OutputFormat.TEXT
+
+    return AppConfig(
+        directory=args.directory,
+        output_format=output_format,
+        verbose=args.verbose,
+    )
 
 
 def main() -> None:
