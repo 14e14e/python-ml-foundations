@@ -1,5 +1,8 @@
 from pathlib import Path
 
+import pytest
+
+from python_ml_foundations.dataset_inspector.errors import DatasetInspectionError
 from python_ml_foundations.dataset_inspector.inspector import inspect_dataset
 
 
@@ -27,3 +30,25 @@ def test_inspect_dataset(tmp_path: Path) -> None:
     }
 
     assert summary.largest_file == text_dir / "note.txt"
+
+
+def test_inspect_dataset_when_os_error(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """ファイルアクセスエラーが独自例外へ変換されることを確認します。"""
+
+    def raise_os_error(directory: Path) -> list[Path]:
+        """テスト用にOSErrorを発生させます。"""
+        raise OSError("テスト用エラー")
+
+    monkeypatch.setattr(
+        "python_ml_foundations.dataset_inspector.inspector.scan_files",
+        raise_os_error,
+    )
+
+    with pytest.raises(
+        DatasetInspectionError,
+        match="ファイルアクセスエラー",
+    ):
+        inspect_dataset(tmp_path)

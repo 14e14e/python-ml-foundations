@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 
+from python_ml_foundations.dataset_inspector.errors import DatasetInspectionError
 from python_ml_foundations.dataset_inspector.inspector import inspect_dataset
 from python_ml_foundations.dataset_inspector.report import (
     format_json_report,
@@ -50,7 +51,10 @@ def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
 
-    summary = inspect_dataset(args.directory)
+    try:
+        summary = inspect_dataset(args.directory)
+    except DatasetInspectionError as error:
+        parser.error(str(error))
 
     if args.json:
         report = format_json_report(summary)
