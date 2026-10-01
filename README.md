@@ -13,6 +13,12 @@
 uv run dataset-inspector ./sample_data
 ```
 
+### JSON形式で表示
+
+```bash
+uv run dataset-inspector ./sample_data --json
+```
+
 ### テスト
 
 ```bash
@@ -24,9 +30,3 @@ uv run ruff check .
 uv run ruff format --check .
 ```
 
-### README更新後
-
-```bash
-git add README.md
-git commit -m "文書: データセット調査CLIの使用方法を追加"
-```
